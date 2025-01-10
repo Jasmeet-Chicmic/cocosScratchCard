@@ -25,6 +25,9 @@ export class ScratchCard extends Component {
     @property(Label)
     progress !: Label;
 
+    @property(Number)
+    revealProgress: number = 50;
+
     tempDrawPoints: Vec3[] = [];
     tempPos: Vec3 = new Vec3();
     polygonPointsList: { rect: Rect; isHit: boolean }[] = [];
@@ -69,6 +72,7 @@ export class ScratchCard extends Component {
     }
 
     reset() {
+        this.cardNode.active = true
         this.scheduleOnce(() => {
             let mask: Mask = this.maskNode.getComponent(Mask)!;
             mask.getComponent(Graphics).clear();
@@ -151,8 +155,11 @@ export class ScratchCard extends Component {
             ctx.fillColor = new Color(216, 18, 18, 255);
             ctx.fill();
         });
-
-        this.progress.string = `${Math.ceil((hitItemCount / this.polygonPointsList.length) * 100)}%`;
+        let progressValue = Math.ceil((hitItemCount / this.polygonPointsList.length) * 100);
+        if (progressValue > this.revealProgress) {
+            this.cardNode.active = false;
+        }
+        this.progress.string = `${progressValue}%`;
     }
 
 }
